@@ -1,0 +1,15 @@
+.footer {
+    position: absolute;
+    bottom: 0%;
+    background-color: #222;
+    width: 100%;
+    min-height: 50px;
+    display: grid;
+}
+
+.text {
+    text-align: center;
+    font-size: medium;
+    color: #fff;
+    align-self: center;
+}

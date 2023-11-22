@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect,useLayoutEffect, useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { fetchProducts } from '../data/api/products'
 import {
@@ -11,12 +11,13 @@ import {
     CardActions,
     Button
 } from '@mui/material'
+import Product from '../components/Product'
 
 
 
-const ProductGrid = ({ products, getProductList }) => {
-
-    const [productList, setProductList] = useState(products)
+const ProductGrid = ({ products }) => {
+    const [productList, setProductList] = useState([])
+    const [showMore, setShowMore] = useState(false)
 
     const {
         isLoading,
@@ -34,16 +35,13 @@ const ProductGrid = ({ products, getProductList }) => {
         refetch()
     })
 
-    const [showMore, setShowMore] = useState(false)
-
     useEffect(() => {
         if (companies && companies.length > 0) {
             setProductList(companies)
-            getProductList(companies)
+        } else {
+            setProductList(products)
         }
-    }, [companies])
-
-
+    }, [companies, products])
 
     if (isError) {
         return <div>error occurred</div>
@@ -55,35 +53,7 @@ const ProductGrid = ({ products, getProductList }) => {
                 <Grid container spacing={2}>
                     {productList && productList.map(product => (
                         <Grid key={product.id} item xs={3}>
-                            <Card sx={{ maxWidth: 345, height: 350 }}>
-                                <CardMedia
-                                    component='img'
-                                    alt={product.title}
-                                    height='140'
-                                    image={product.image}
-                                />
-                                <CardContent>
-                                    <Typography gutterBottom variant='h5' component='div'>
-                                        {product.title}
-                                    </Typography>
-                                    <Typography variant='body2' color='text.secondary'>
-                                        {/* {product.description} */}
-                                        {showMore
-                                            ? product.description
-                                            : `${product.description.substring(0, 100)}`}
-
-                                        <a href="#"
-                                            onClick={() => setShowMore(!showMore)}
-                                        >
-                                            {showMore ? 'Show less' : 'Show more'}
-                                        </a>
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button size='small'>Add to cart</Button>
-                                    <Button size='small'>Buy Now</Button>
-                                </CardActions>
-                            </Card>
+                            <Product product={product} />
                         </Grid>
                     ))}
                 </Grid>
